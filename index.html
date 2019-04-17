@@ -70,10 +70,13 @@
             root.appendChild(textWrap);
             return root;
         }
+        // 树的深度
         const deep = (parent.deep || 1);
+        // 每层边长旋转的角度
         const baseDeg = (parent.deg || BASE_DEG) * 1.5;
         //  const baseDeg = BASE_DEG + deep + RATIO;
         console.log('deg', parent.deg);
+        // 边的长度
         const lineWidth = (parent.len || LINE_WIDTH) * 0.7;
 
         const fragment = document.createDocumentFragment();
