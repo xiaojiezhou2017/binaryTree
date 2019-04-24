@@ -51,6 +51,23 @@
         border-radius: 10px;
         outline: none;
     }
+    .jump {
+        animation: jump 1s ;
+    }
+    @keyframes jump {
+        15% {
+           transform: scale(2) 
+        }
+        50%{
+            transform: scale(1)
+        }
+        75%{
+            transform: scale(2)
+        }
+        100%{
+            transform: scale(1)
+        }
+    }
 </style>
 <body>
     <div id="circle" style="visibility: hidden"></div>
@@ -237,9 +254,11 @@
             const source = getPos(sourceEle);
             const target = getPos(targetEle);
             source.value = value;
+            sourceEle.setAttribute('class', 'box jump');
             await moveByLine(source, target);
             setVal(targetEle, value);
             setVal(sourceEle, binaryTree[targetValue])
+            sourceEle.setAttribute('class', 'box');
             exchange(binaryTree, sourceValue, targetValue);
         }
     }
