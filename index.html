@@ -7,7 +7,13 @@
     <title>Document</title>
 </head>
 <style>
+    body {
+        color: #fff;
+        background: black;
+        padding: 20px;
+    }
     .box {
+        color: #fff;
         height: 30px;
         width: 30px;
         border: 1px solid red;
@@ -21,10 +27,44 @@
         height: 0px;
         width: 150px;
     }
+    #circle {
+        font-size: 12px;
+        color: #fff;
+        position: absolute;
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+        border: 1px solid red;
+        text-align: center;
+        line-height: 30px;
+    }
+    button {
+        outline: none;
+        border: none;
+        height: 30px;
+        width: 100px;
+        background: #fff;
+        border-radius: 10px;
+    }
+    input {
+        border: 1px solid #fff;
+        border-radius: 10px;
+        outline: none;
+    }
 </style>
 <body>
+    <div id="circle" style="visibility: hidden"></div>
+    <div id="circleOne"></div>
+    <label for="value">请输入要插入的值:</label>
+    <input type="text" id="value" name="value" onchange="handleChange(this.value)">
 </body>
 <script>
+
+
+    function handleChange (value) {
+        push(value)
+        render();
+    }
     const FONT_SIZE = 12;
     const SHAPE = '30';
     const LINE_WIDTH = 300;
@@ -75,7 +115,6 @@
         // 每层边长旋转的角度
         const baseDeg = (parent.deg || BASE_DEG) * 1.5;
         //  const baseDeg = BASE_DEG + deep + RATIO;
-        console.log('deg', parent.deg);
         // 边的长度
         const lineWidth = (parent.len || LINE_WIDTH) * 0.7;
 
@@ -114,20 +153,169 @@
         return child;
     }
 
+
+    // 节点交换
+    // source { left right value }
+    function nodeChange (source, target) {
+
+    }
+
+    function setPoistion (target, left, top) {
+        target.style.left = left + 'px';
+        target.style.top = top + 'px';
+    }
+
+    function moveByLine (source, target) {
+        let { left: sl, top: st,  value: sv } = source;
+        let { left: tl, top: tt,  value: tv } = target;
+        const leftDis = Math.abs(sl - tl);
+        const topDis = Math.abs(tt - st);
+        const dis = Math.sqrt(leftDis ** 2 + topDis ** 2);
+        const ele = document.querySelector('#circle');
+        ele.style.visibility = 'visible';
+        ele.innerHTML = sv;
+        const leftDir = leftDis / dis;
+        const topDir = topDis / dis;
+        const speed = 1;
+        let leftPos = sl
+        let topPos = st;
+        return new Promise((resolve, reject) => {
+            const timer = setInterval(() => {
+                if (sl < tl) {
+                    leftPos += speed * leftDir;
+                } else {
+                    leftPos -= speed * leftDir;
+                }
+                if (st < tt) {
+                    topPos += speed * topDir; 
+                } else {
+                    topPos -= speed * topDir; 
+                }
+                setPoistion(ele, leftPos, topPos);
+                if (Math.abs(leftPos - tl) < 3 || Math.abs(topPos - tt) < 3) {
+                    resolve();
+                    clearInterval(timer);
+                }
+            }, 10)
+        })
+        
+       
+    }
+    // 排序二叉树
+    var binaryTree = ['', 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+
+    function exchange (arr, i, j) {
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+
+    const animationList = [];
+
+    function getElement (id) {
+        return document.querySelector(`#id-${id}`);
+    };
+
+    function getPos (ele) {
+        return ele.getBoundingClientRect();
+    };
+
+    function setVal (ele, value) {
+        ele.querySelector('span').innerHTML = value;
+    }
+
+    function hideCircle () {
+        document.querySelector('#circle').style.visibility = 'hidden';
+    }
+    async function handleOpration (opt) {
+        const { type, data } = opt;
+        if (opt.type === 'exchange') {
+            const sourceValue = data[0];
+            const targetValue = data[1];
+            const value = data[2];
+            const sourceEle = getElement(sourceValue);
+            const targetEle = getElement(targetValue);
+            const source = getPos(sourceEle);
+            const target = getPos(targetEle);
+            source.value = value;
+            await moveByLine(source, target);
+            setVal(targetEle, value);
+            setVal(sourceEle, binaryTree[targetValue])
+            exchange(binaryTree, sourceValue, targetValue);
+        }
+    }
+
+    async function render () {
+       while (animationList.length) {
+         const a = animationList.shift();
+         await handleOpration(a);
+       }
+       hideCircle();
+    }  
+
+
+    function pushOpration (opt) {
+        animationList.push(opt);
+    }  
+
+    function drawTree (binaryTree) {
+        const rootDom = document.querySelector('[data-root="true"]');
+        if (rootDom) {
+            document.body.removeChild(rootDom);
+        }
+        function _darwTree (tree, n, parent) {
+            if (2*n + 1 > tree.length) {
+                return;
+            }
+            const leftValue = tree[2*n];
+            const rightValue = tree[2*n + 1];
+            const left = appendNode(parent, leftValue, 'left');
+            left.setAttribute('id', 'id-' + 2*n);
+            _darwTree(tree, 2*n, left);
+            if (rightValue) {
+                const right = appendNode(parent, rightValue, 'right');
+                right.setAttribute('id', 'id-' + (2*n+1));
+                _darwTree(tree, 2*n+1, right);
+            }
+        }
+        const root = appendNode(undefined, binaryTree[1]);
+        root.setAttribute('id', 'id-' + 1);
+        root.setAttribute('data-root', true);
+        _darwTree(binaryTree, 1, root);
+    }
+
+    drawTree(binaryTree);
+
+    
+
+
+    function push (item, isExchange = false) {
+        let pos = binaryTree.push(item) - 1;
+        drawTree(binaryTree);
+        swim(pos, item, isExchange);
+        // drawTree(binaryTree);
+    };
+
+    // 上浮一个元素
+    function swim (pos, value, isExchange = false) {
+        let parentPos;  
+        let p = pos;
+        while ((parentPos = (Math.floor(p / 2))) >= 1) {
+            parentValue = binaryTree[parentPos];
+            if (parentValue < value) {
+                if (isExchange) {
+                  exchange(binaryTree, parentPos, p);
+                }
+                pushOpration({ data: [ p,  parentPos, value], type: 'exchange'})
+            }
+            p = parentPos;
+        }
+        console.log('animationList', animationList)
+    }
+
+    /**
     const root = appendNode(undefined, 1);
     const child = appendNode(root, 2, 'right')
     const child2 = appendNode(root, 3, 'left')
-    appendNode(child, 4, 'right');
-    const child5 = appendNode(child, 5, 'left');
-    appendNode(child5, 10, 'right');
-    const child11 = appendNode(child5, 11, 'left');
-    appendNode(child11, 14, 'left');
-    appendNode(child11, 15, 'right');
-    const child3 = appendNode(child2, 6, 'right');
-    appendNode(child2, 7, 'left');
-    appendNode(child3, 8, 'left');
-    const child9 = appendNode(child3, 9, 'right');
-    appendNode(child9, 12, 'left');
-    appendNode(child9, 13, 'right');
+    **/
 </script>
 </html>
