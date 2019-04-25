@@ -56,13 +56,13 @@
     }
     @keyframes jump {
         15% {
-           transform: scale(2) 
+           transform: scale(2.5) 
         }
         50%{
             transform: scale(1)
         }
         75%{
-            transform: scale(2)
+            transform: scale(2.5)
         }
         100%{
             transform: scale(1)
@@ -89,6 +89,7 @@
     const deepMap = {};
     const RATIO = 3;
     const BASE_DEG = 20;
+    const SPEED = 0.5;
 
     function getDeep () {
         let deep = 1;
@@ -142,7 +143,7 @@
         line.setAttribute('class', 'line');
 
         const transformDeg = dir === 'right' ? `${baseDeg}deg` : `${180-baseDeg}deg`;
-        line.style.width = lineWidth + 'px';
+        line.style.width = (lineWidth - 15) + 'px';
         line.style.transformOrigin = 'left top'
         // line.style.transform = `rotate(45deg) translateX(${moveStance}px) translateY(${moveStance}px)`;
         line.style.transform = `translateX(${moveStance}px) translateY(${moveStance}px) rotate(${transformDeg})`;
@@ -193,7 +194,7 @@
         ele.innerHTML = sv;
         const leftDir = leftDis / dis;
         const topDir = topDis / dis;
-        const speed = 1;
+        const speed = SPEED;
         let leftPos = sl
         let topPos = st;
         return new Promise((resolve, reject) => {
@@ -219,7 +220,7 @@
        
     }
     // 排序二叉树
-    var binaryTree = ['', 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+    var binaryTree = ['', 12, 11, 10, 9];
 
     function exchange (arr, i, j) {
         [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -243,6 +244,10 @@
     function hideCircle () {
         document.querySelector('#circle').style.visibility = 'hidden';
     }
+
+    function setTextClass (parent, className) {
+        parent.querySelector('span').setAttribute('class', className);
+    }
     async function handleOpration (opt) {
         const { type, data } = opt;
         if (opt.type === 'exchange') {
@@ -253,12 +258,14 @@
             const targetEle = getElement(targetValue);
             const source = getPos(sourceEle);
             const target = getPos(targetEle);
+            setTextClass(sourceEle, 'jump');
+            setTextClass(targetEle, 'jump');
             source.value = value;
-            sourceEle.setAttribute('class', 'box jump');
             await moveByLine(source, target);
             setVal(targetEle, value);
             setVal(sourceEle, binaryTree[targetValue])
-            sourceEle.setAttribute('class', 'box');
+            setTextClass(sourceEle, '');
+            setTextClass(targetEle, '');
             exchange(binaryTree, sourceValue, targetValue);
         }
     }
