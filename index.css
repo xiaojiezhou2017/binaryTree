@@ -11,6 +11,7 @@ body {
   position: absolute;
   font-size: 12px;
   border-radius: 50%;
+  transition: all 0.5s;
 }
 .line {
   position: absolute;
@@ -79,4 +80,22 @@ input {
 }
 label {
   font-size: 12px;
+}
+.height-light {
+  background: rgb(171, 92, 31);
+}
+.info {
+  color: #00fa9a;
+  position: absolute;
+  top: -19px;
+  left: -24px;
+  width: 200px;
+}
+
+.sorted {
+  background: #fff;
+  color: black;
+}
+.sorted .text-wrap {
+  background: #fff;
 }

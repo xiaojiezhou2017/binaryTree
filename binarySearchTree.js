@@ -21,18 +21,34 @@ class BinarySearchTree {
   }
 
   get(key) {
-    this._get(tree.root, key);
+    this._get(this.root, key);
   }
 
   _get(node, key) {
     if (node === undefined) {
       return;
     }
+    function appOpt(nodes, forevar, info) {
+      nodes = nodes || Array.from(node.ref.querySelectorAll('div'));
+      pushOpration({
+        data: {
+          nodes,
+          forevar,
+          infoEle: node.ref,
+          info
+        },
+        type: 'heightLight'
+      });
+    }
+
     if (node.key === key) {
+      appOpt([node.ref], true, '查找到该元素');
       return node.value;
     } else if (key < node.key) {
+      appOpt(undefined, false, `<-${key}小于当前值，向左子树查找`);
       return this._get(node.left, key);
     } else if (key > node.key) {
+      appOpt(undefined, false, `${key}大于当前值，向右子树查找->`);
       return this._get(node.right, key);
     }
   }
@@ -54,8 +70,10 @@ searchArr.forEach(i => binarySearchTree.put(i));
 print(searchArr);
 
 function drawSearchTree(tree) {
+  clearRootDom();
   _drawSearchTree(tree.root, appendNode(undefined, tree.root.key));
   function _drawSearchTree(parent, parentDom) {
+    parent.ref = parentDom;
     if (parent.left) {
       const leftDom = appendNode(parentDom, parent.left.key, 'left');
       _drawSearchTree(parent.left, leftDom);
@@ -67,4 +85,8 @@ function drawSearchTree(tree) {
   }
 }
 
-drawSearchTree(binarySearchTree);
+function handleSearch() {
+  drawSearchTree(binarySearchTree);
+  binarySearchTree.get(8);
+  render();
+}

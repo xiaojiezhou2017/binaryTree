@@ -1,8 +1,5 @@
 function drawTree(binaryTree) {
-  const rootDom = document.querySelector('[data-root="true"]');
-  if (rootDom) {
-    document.body.removeChild(rootDom);
-  }
+  clearRootDom();
   function _darwTree(tree, n, parent) {
     if (2 * n + 1 > tree.length) {
       return;
@@ -102,6 +99,7 @@ function handleSort() {
     while (len >= 1) {
       pushOpration({ data: [len, 1, arr[len]], type: 'exchange' });
       await render();
+      pushOpration({ data: len, type: 'sorted' });
       len--;
       sink(1, arr[1], len);
       await render();

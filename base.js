@@ -46,16 +46,28 @@ function appendNode(parent, value = '', dir) {
   const textWrap = document.createElement('span');
   const textNode = document.createTextNode(value);
   textWrap.appendChild(textNode);
-  textWrap.style.position = 'absolute';
-  textWrap.style.top = moveStance - FONT_SIZE / 2 + 'px';
-  textWrap.style.left = moveStance - FONT_SIZE / 2 + 'px';
+  addClass(textWrap, 'text-wrap ');
+  textWrap.setAttribute(
+    'style',
+    `position: absolute; top:${moveStance -
+      FONT_SIZE / 2 +
+      'px'}; left: ${moveStance - FONT_SIZE / 2 + 'px'}`
+  );
+
+  // info
+  const infoWrap = document.createElement('span');
+  const infoText = document.createTextNode('');
+  addClass(infoWrap, 'info');
+  infoWrap.appendChild(infoText);
 
   if (!parent) {
     const root = document.createElement('div');
+    root.setAttribute('data-root', true);
     root.setAttribute('class', 'box');
     root.style.left = window.innerWidth / 2 - SHAPE / 2 + 'px';
     document.body.appendChild(root);
     root.appendChild(textWrap);
+    root.appendChild(infoWrap);
     return root;
   }
   // 树的深度
@@ -82,6 +94,7 @@ function appendNode(parent, value = '', dir) {
   const child = document.createElement('div');
   child.setAttribute('class', 'box');
   child.appendChild(textWrap);
+  child.appendChild(infoWrap);
   child.deep = deep + 1;
   child.len = lineWidth;
   child.deg = baseDeg;
@@ -168,7 +181,8 @@ function hideCircle() {
 }
 
 function setTextClass(parent, className) {
-  parent.querySelector('span').setAttribute('class', className);
+  const span = parent.querySelector('span');
+  addClass(span, className);
 }
 async function handleOpration(opt) {
   const { type, data } = opt;
@@ -199,6 +213,32 @@ async function handleOpration(opt) {
     parentDom.removeChild(lineDom);
     parentDom.removeChild(currentDom);
   }
+  if (opt.type === 'heightLight') {
+    let texEle;
+    return new Promise(resolve => {
+      data.nodes.forEach(ele => {
+        const infoEle = data.infoEle;
+        if (infoEle) {
+          texEle = infoEle.querySelector('.info');
+          texEle.innerHTML = data.info || '';
+        }
+        addClass(ele, 'height-light');
+      });
+      setTimeout(() => {
+        data.nodes.forEach(ele => {
+          if (!data.forevar) {
+            addClass(ele, 'height-light');
+            texEle.innerHTML = '';
+          }
+        });
+        resolve();
+      }, 2000);
+    });
+  }
+  if (opt.type === 'sorted') {
+    const ele = getElement(data);
+    addClass(ele, 'sorted');
+  }
 }
 
 async function render() {
@@ -219,7 +259,6 @@ function shuffle(arr) {
   const getRange = (min, max) => min + Math.floor((max - min) * Math.random());
   const len = arr.length;
   for (let i = 0; i < len - 1; i++) {
-    const exIndex = getRange(i, len);
     exchange(arr, i, getRange(i, len));
   }
 }
@@ -228,4 +267,29 @@ function getRandomArr(len) {
   const arr = Array.apply(null, { length: len }).map((i, index) => index);
   shuffle(arr);
   return arr;
+}
+
+function addClass(el, value) {
+  const hasClass = el.hasAttribute('class');
+  if (!hasClass) {
+    return el.setAttribute('class', value);
+  }
+  const className = el.getAttribute('class');
+  const classNameArr = className.split(' ').map(i => i.trim());
+  const index = classNameArr.findIndex(i => value === i);
+  if (index > -1) {
+    classNameArr.splice(index, 1);
+    el.setAttribute('class', classNameArr.join(' '));
+    return;
+  }
+  classNameArr.push(value);
+  el.setAttribute('class', classNameArr.join(' '));
+}
+
+function clearRootDom() {
+  const rootDom = document.querySelector('[data-root="true"]');
+  if (rootDom) {
+    document.body.removeChild(rootDom);
+  }
+  animationList.length = 0;
 }
