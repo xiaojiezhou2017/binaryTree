@@ -37,7 +37,8 @@
       border: 1px solid #fff;
       text-align: center;
       line-height: 30px;
-      transform: scale(1.2);
+      z-index: 2;
+      background: black;
     }
     button {
       outline: none;
@@ -84,10 +85,21 @@
       font-size: 20px;
     }
     .button-item {
-        margin-top: 30px;
+      margin-top: 30px;
     }
     label {
-        font-size: 12px;
+      font-size: 12px;
+    }
+    .text-wrap {
+      z-index: 2;
+      background: black;
+    }
+    .sorted {
+      background: #fff;
+      color: black;
+    }
+    .sorted .text-wrap {
+      background: #fff;
     }
   </style>
   <body>
@@ -106,6 +118,25 @@
         <button onclick="delMax()">删除最大元素</button>
       </div>
       <div class="button-item">
+        <div>
+          <label for="len">请输入数组的长度，默认是15:</label>
+          <input
+            type="text"
+            id="len"
+            name="len"
+            onchange="handleLenChange(this.value)"
+          />
+        </div>
+        <div>
+          <label for="len">自定义数组，用逗号分隔</label>
+          <input
+            type="text"
+            id="len"
+            name="len"
+            onchange="handleArrayChange(this.value)"
+          />
+        </div> 
+        </div>
         <button onclick="handleSort()">演示堆排序</button>
       </div>
     </div>
@@ -116,6 +147,7 @@
     </div>
   </body>
   <script>
+    let isCustom = 'default'; // default 默认数组长度15 customArr 自定义数组 customLecustomLen 自定义数组长度
     function handleChange(value) {
       push(Number(value));
       render();
@@ -129,6 +161,17 @@
       container.innerHTML = items;
     }
 
+    function handleLenChange(value) {
+      len = Number(value) + 1;
+      isCustom = 'customLen'
+    }
+
+    function handleArrayChange (value) {
+      let arr = value.split(',').map(Number);
+      binaryTree = arr;
+      isCustom = 'customArr'
+    }
+
     const FONT_SIZE = 12;
     const SHAPE = '30';
     const LINE_WIDTH = 300;
@@ -137,8 +180,10 @@
     const RATIO = 3;
     const BASE_DEG = 20;
     const SPEED = 0.6;
+    const BOUNDARY = 1;
 
     // 排序二叉树
+    let len = 15;
     let binaryTree = [''];
 
     function getDeep() {
@@ -166,6 +211,7 @@
       const textWrap = document.createElement('span');
       const textNode = document.createTextNode(value);
       textWrap.appendChild(textNode);
+      textWrap.setAttribute('class', 'text-wrap');
       textWrap.style.position = 'absolute';
       textWrap.style.top = moveStance - FONT_SIZE / 2 + 'px';
       textWrap.style.left = moveStance - FONT_SIZE / 2 + 'px';
@@ -258,7 +304,10 @@
             topPos -= speed * topDir;
           }
           setPoistion(ele, leftPos, topPos);
-          if (Math.abs(leftPos - tl) < 3 || Math.abs(topPos - tt) < 3) {
+          if (
+            Math.abs(leftPos - tl) < BOUNDARY ||
+            Math.abs(topPos - tt) < BOUNDARY
+          ) {
             resolve();
             clearInterval(timer);
           }
@@ -289,8 +338,40 @@
       document.querySelector('#circle').style.visibility = 'hidden';
     }
 
+    function addClass(el, value) {
+      const hasClass = el.hasAttribute('class');
+      if (!hasClass) {
+        return el.setAttribute('class', value);
+      }
+      const className = el.getAttribute('class');
+      const classNameArr = className.split(' ').map(i => i.trim());
+      const index = classNameArr.findIndex(i => value === i);
+      if (index > -1) {
+        classNameArr.splice(index, 1);
+        el.setAttribute('class', classNameArr.join(' '));
+        return;
+      }
+      classNameArr.push(value);
+      el.setAttribute('class', classNameArr.join(' '));
+    }
+
+    function hasClass (el,value) {
+      const hasClass = el.hasAttribute('class');
+      if (!hasClass) {
+        return false;
+      } 
+      const className = el.getAttribute('class');
+      const classNameArr = className.split(' ').map(i => i.trim());
+      const index = classNameArr.findIndex(i => value === i);
+      if (index > -1) {
+        return true;
+      }
+      return false;
+    }
+
     function setTextClass(parent, className) {
-      parent.querySelector('span').setAttribute('class', className);
+      const span = parent.querySelector('span');
+      addClass(span, className);
     }
     async function handleOpration(opt) {
       const { type, data } = opt;
@@ -303,15 +384,21 @@
         const targetEle = getElement(targetValue);
         const source = getPos(sourceEle);
         const target = getPos(targetEle);
-        setTextClass(sourceEle, 'jump');
-        setTextClass(targetEle, 'jump');
         source.value = value;
         await moveByLine(source, target);
         setVal(targetEle, value);
         setVal(sourceEle, binaryTree[targetValue]);
-        setTextClass(sourceEle, '');
-        setTextClass(targetEle, '');
         exchange(binaryTree, sourceValue, targetValue);
+        setTextClass(sourceEle, 'jump');
+        setTextClass(targetEle, 'jump');
+        const jump = new Promise(resolve => {
+          setTimeout(() => {
+            setTextClass(sourceEle, 'jump');
+            setTextClass(targetEle, 'jump');
+            resolve();
+          }, 1000);
+        });
+        await jump;
       }
       if (opt.type === 'remove') {
         const parent = Math.floor(data / 2);
@@ -321,6 +408,10 @@
         parentDom.removeChild(lineDom);
         parentDom.removeChild(currentDom);
       }
+      if (opt.type === 'sorted') {
+        const ele = getElement(data);
+        addClass(ele, 'sorted');
+      }
     }
 
     async function render() {
@@ -328,7 +419,7 @@
         const a = animationList.shift();
         await handleOpration(a);
       }
-      hideCircle();
+      clearList.push(hideCircle)
       clearList.forEach(i => i.call(null));
       clearList = [];
     }
@@ -405,11 +496,19 @@
 
     function sink(pos, value, len = binaryTree.length) {
       let p = pos;
-      while (p * 2 < len) {
+      while (p * 2 < len || (p === 1 && len === 2)) { 
+        // 这里len不仅仅表示执行的次数，也表示当前可取的数组索引用来交换去当前对应的dom
+        // 这里的len有双重意义，导致在len == 2的时候，不再执行下浮的操作，会导致最后元素排序不正确，缺少一次下浮操作
+        // 可以优化，把执行次数和取当前元素的意思分开
         const childPos = 2 * p;
+        let replace = childPos;
         const childValue = binaryTree[childPos];
-        const rightChildValue = binaryTree[childPos + 1] || -Infinity;
-        const replace = childValue > rightChildValue ? childPos : childPos + 1;
+        if (p * 2 + 1 <= len) {
+          const rightChildValue = binaryTree[childPos + 1]
+          if (rightChildValue > childValue) {
+            replace = rightChildValue;
+          }
+        }
         if (value >= binaryTree[replace]) {
           break;
         } else {
@@ -422,9 +521,13 @@
 
     function handleSort() {
       // 构造堆排序的过程
-      binaryTree = Array.apply(null, { length: 15 }).map((i, index) => index);
-      shuffle(binaryTree);
-      binaryTree[0] = '';
+      if (isCustom!== 'customArr') {
+        binaryTree = Array.apply(null, { length: len }).map((i, index) => index);
+        shuffle(binaryTree);
+        binaryTree[0] = '';
+      } else {
+        binaryTree.unshift('');
+      }
       // binaryTree = ['', 13, 9, 0, 1, 7, 11, 3, 5, 6, 12, 10, 8, 2, 14];
       console.log('binaryTree', binaryTree.slice());
 
@@ -446,9 +549,11 @@
           sink(i, value, len);
           await render();
         }
-        len--;
+        len--; // 3
         while (len >= 1) {
           pushOpration({ data: [len, 1, arr[len]], type: 'exchange' });
+          await render();
+          pushOpration({ data: len, type: 'sorted' });
           await render();
           len--;
           sink(1, arr[1], len);
