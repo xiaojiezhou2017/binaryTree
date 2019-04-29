@@ -67,7 +67,6 @@ const binarySearchTree = new BinarySearchTree();
 // const searchArr = getRandomArr(10);
 const searchArr = [5, 2, 9, 7, 1, 3, 8, 6, 4, 0];
 searchArr.forEach(i => binarySearchTree.put(i));
-print(searchArr);
 
 function drawSearchTree(tree) {
   clearRootDom();
@@ -86,6 +85,7 @@ function drawSearchTree(tree) {
 }
 
 function handleSearch() {
+  print(searchArr);
   drawSearchTree(binarySearchTree);
   binarySearchTree.get(8);
   render();

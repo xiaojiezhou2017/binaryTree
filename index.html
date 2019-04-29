@@ -10,22 +10,35 @@
   <body>
     <div id="circle" style="visibility: hidden"></div>
     <div id="circleOne"></div>
-    <label for="value">请输入要插入的值:</label>
-    <input
-      type="text"
-      id="value"
-      name="value"
-      onchange="handleChange(this.value)"
-    />
-
+    <div class="feature-item">
+      <div>
+        <label for="value">请输入要插入的值:</label>
+        <input
+          type="text"
+          id="value"
+          name="value"
+          onchange="handleChange(this.value)"
+        />
+        <button onclick="delMax()">删除最大元素</button>
+      </div>
+    </div>
+    <div class="feature-item">
+      <div>
+        <label for="value">请输入自定义数组,逗号分隔:</label>
+        <input
+          type="text"
+          id="value"
+          name="value"
+          onchange="handleArrChange(this.value)"
+        />
+        <button onclick="handleSort()">演示堆排序</button>
+      </div>
+    </div>
     <div class="button-group">
       <div class="button-item">
-        <button onclick="delMax()">删除最大元素</button>
-        <button onclick="handleSort()">演示堆排序</button>
         <button onclick="handleSearch()">演示二叉树查找</button>
       </div>
     </div>
-
     <div class="console-wrapper">
       <span>当前数组:</span>
       <div id="console"></div>

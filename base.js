@@ -195,12 +195,21 @@ async function handleOpration(opt) {
     const targetEle = getElement(targetValue);
     const source = getPos(sourceEle);
     const target = getPos(targetEle);
-    setTextClass(sourceEle, 'jump');
-    setTextClass(targetEle, 'jump');
     source.value = value;
     await moveByLine(source, target);
+    hideCircle();
+
     setVal(targetEle, value);
     setVal(sourceEle, binaryTree[targetValue]);
+    setTextClass(sourceEle, 'jump');
+    setTextClass(targetEle, 'jump');
+    await new Promise(resolve => {
+      setTimeout(() => {
+        setTextClass(sourceEle, 'jump');
+        setTextClass(targetEle, 'jump');
+        resolve();
+      }, 1000);
+    });
     setTextClass(sourceEle, '');
     setTextClass(targetEle, '');
     exchange(binaryTree, sourceValue, targetValue);

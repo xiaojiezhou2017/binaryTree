@@ -29,7 +29,9 @@ body {
   border: 1px solid #fff;
   text-align: center;
   line-height: 30px;
-  transform: scale(1.2);
+  transform: scale(1);
+  z-index: 2;
+  color: #00fa9a;
 }
 button {
   outline: none;
@@ -38,6 +40,11 @@ button {
   width: 100px;
   background: #fff;
   border-radius: 5px;
+  background: linear-gradient(to right, #05fbff, #1e00ff);
+  border-radius: 8px;
+  display: inline-block;
+  padding: 1px;
+  text-decoration: none;
 }
 input {
   border: 1px solid #fff;
@@ -66,7 +73,7 @@ input {
 }
 .console-wrapper {
   width: 500px;
-  margin: 0 auto;
+  margin: 20px auto;
 }
 #console {
   display: inline-block;
@@ -98,4 +105,12 @@ label {
 }
 .sorted .text-wrap {
   background: #fff;
+}
+.text-wrap {
+  z-index: 2;
+  background: black;
+}
+.feature-item {
+  margin-top: 20px;
+  width: 400px;
 }
