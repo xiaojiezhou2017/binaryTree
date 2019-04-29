@@ -1,3 +1,11 @@
+let targetValue = 8;
+function handleTarget(value) {
+  if (value) {
+    print(searchArr);
+    drawSearchTree(binarySearchTree);
+    targetValue = Number(value);
+  }
+}
 class BinarySearchTree {
   constructor() {
     this.root = undefined;
@@ -5,7 +13,14 @@ class BinarySearchTree {
   put(key, value) {
     this.root = this._put(this.root, key, value);
   }
-  // 添加方法要不怎么理解, 对这种问题理解不清楚，归根究底是自己对递归过程理解的不是很清楚
+  /**
+   * put方法应该理解为：
+   * 和当前节点做比较:
+   * 1. 要是当前节点不存在，创建一个新的节点返回
+   * 2. key > 当前节点的key, 查找当前节点的右节点
+   * 3. key < 当前节点的key, 查找当前节点的左节点
+   * 4. key === 当前节点的key值， 重置当前节点的值
+   */
   _put(node, key, value) {
     if (node === undefined) {
       return new Node(key, value);
@@ -87,6 +102,6 @@ function drawSearchTree(tree) {
 function handleSearch() {
   print(searchArr);
   drawSearchTree(binarySearchTree);
-  binarySearchTree.get(8);
+  binarySearchTree.get(targetValue);
   render();
 }

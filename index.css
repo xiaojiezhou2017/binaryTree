@@ -91,6 +91,10 @@ label {
 .height-light {
   background: rgb(171, 92, 31);
 }
+.height-light > .text-wrap {
+  background: rgb(171, 92, 31);
+}
+
 .info {
   color: #00fa9a;
   position: absolute;
