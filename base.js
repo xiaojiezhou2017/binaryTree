@@ -1,6 +1,8 @@
 const animationList = []; // 动画列表
 let clearList = []; // 动画执行完成，执行清理动作
-
+function handleChangeSpeed(ratio) {
+  speed = BASE_SPEED * ratio;
+}
 function print(arr) {
   const container = document.querySelector('#console');
   const items = arr.reduce((prev, next, index) => {
@@ -16,7 +18,8 @@ const deep = 0;
 const deepMap = {};
 const RATIO = 3;
 const BASE_DEG = 20;
-const SPEED = 0.6;
+const BASE_SPEED = 0.6;
+let speed = BASE_SPEED;
 
 // 排序二叉树
 let binaryTree = [''];
@@ -115,10 +118,6 @@ function appendNode(parent, value = '', dir) {
   return child;
 }
 
-// 节点交换
-// source { left right value }
-function nodeChange(source, target) {}
-
 function setPoistion(target, left, top) {
   target.style.left = left + 'px';
   target.style.top = top + 'px';
@@ -135,11 +134,11 @@ function moveByLine(source, target) {
   ele.innerHTML = sv;
   const leftDir = leftDis / dis;
   const topDir = topDis / dis;
-  const speed = SPEED;
   let leftPos = sl;
   let topPos = st;
-  return new Promise((resolve, reject) => {
-    const timer = setInterval(() => {
+
+  return new Promise(resolve => {
+    function step() {
       if (sl < tl) {
         leftPos += speed * leftDir;
       } else {
@@ -151,11 +150,14 @@ function moveByLine(source, target) {
         topPos -= speed * topDir;
       }
       setPoistion(ele, leftPos, topPos);
-      if (Math.abs(leftPos - tl) < 3 || Math.abs(topPos - tt) < 3) {
+      const isStop = Math.abs(leftPos - tl) < 3 || Math.abs(topPos - tt) < 3;
+      if (!isStop) {
+        window.requestAnimationFrame(step);
+      } else {
         resolve();
-        clearInterval(timer);
       }
-    }, 10);
+    }
+    window.requestAnimationFrame(step);
   });
 }
 

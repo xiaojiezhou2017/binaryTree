@@ -27,9 +27,17 @@
         <label for="value">请输入自定义数组,逗号分隔:</label>
         <input
           type="text"
-          id="value"
           name="value"
           onchange="handleArrChange(this.value)"
+        />
+      </div>
+      <div>
+        <label for="value">请输入执行的速率:</label>
+        <input
+          type="text"
+          value="1"
+          name="value"
+          onchange="handleChangeSpeed(this.value)"
         />
         <button onclick="handleSort()">演示堆排序</button>
       </div>
