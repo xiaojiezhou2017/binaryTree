@@ -43,7 +43,16 @@ function getDeep() {
 
 const getDeeper = getDeep();
 
-function appendNode(parent, value = '', dir) {
+function appendNode(parent, value = '', dir, strategy) {
+  function defaultStrategy(parent) {
+    return {
+      baseDeg: (parent.deg || BASE_DEG) * 1.5,
+      lineWidth: (parent.len || LINE_WIDTH) * 0.7
+    };
+  }
+
+  strategy = strategy || defaultStrategy;
+
   const moveStance = SHAPE / 2;
   // text
   const textWrap = document.createElement('span');
@@ -76,10 +85,11 @@ function appendNode(parent, value = '', dir) {
   // 树的深度
   const deep = parent.deep || 1;
   // 每层边长旋转的角度
-  const baseDeg = (parent.deg || BASE_DEG) * 1.5;
+  const { baseDeg, lineWidth } = strategy(parent);
+  // const baseDeg = (parent.deg || BASE_DEG) * 1.5;
   //  const baseDeg = BASE_DEG + deep + RATIO;
   // 边的长度
-  const lineWidth = (parent.len || LINE_WIDTH) * 0.7;
+  // const lineWidth = (parent.len || LINE_WIDTH) * 0.7;
 
   const fragment = document.createDocumentFragment();
   const x = 0;
@@ -228,7 +238,7 @@ async function handleOpration(opt) {
     let texEle;
     return new Promise(resolve => {
       data.nodes.forEach(ele => {
-        const infoEle = data.infoEle;
+        const infoEle = data.infoEle || ele;
         if (infoEle) {
           texEle = infoEle.querySelector('.info');
           texEle.innerHTML = data.info || '';
