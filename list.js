@@ -59,7 +59,7 @@ class List {
           data: {
             nodes: [head.ref],
             info: 'next',
-            forevar: false 
+            forevar: false
           },
           type: 'heightLight'
       });
@@ -70,18 +70,18 @@ class List {
           data: {
             nodes: prev ? [prev.ref]: [],
             info: 'prev',
-            forevar: false 
+            forevar: false
           },
           type: 'heightLight'
         }
       );
       prev = head;
       pushOpration(
-      { 
+      {
         data: {
           nodes: next ? [next.ref] : [],
           info: 'head',
-          forevar: false 
+          forevar: false
         },
         type: 'heightLight'
       });
@@ -103,4 +103,3 @@ class List {
   }
 }
 
-List.test();

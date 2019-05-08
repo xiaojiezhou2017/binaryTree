@@ -118,3 +118,43 @@ label {
   margin-top: 20px;
   width: 400px;
 }
+.theme-btn {
+  float: right;
+}
+/**  white theme **/
+
+.white-theme {
+  color: black;
+  background: #fff;
+}
+.white-theme input {
+  border-color: black;
+}
+.white-theme #circle {
+  border-color: black;
+  background: rgba(0, 0, 0, 0.6);
+}
+.white-theme .text-wrap {
+  background: #fff;
+  color: black;
+}
+
+.white-theme .box {
+  border-color: black;
+}
+
+.white-theme .line {
+  border-color: black;
+}
+
+.white-theme .sorted {
+  background: mediumspringgreen;
+}
+
+.white-theme .sorted .text-wrap {
+  background: mediumspringgreen;
+}
+
+.white-theme .height-light > .text-wrap {
+  background: rgb(171, 92, 31);
+}

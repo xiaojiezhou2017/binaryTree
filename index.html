@@ -8,6 +8,7 @@
   </head>
   <link rel="stylesheet" href="./index.css" />
   <body>
+    <button onclick="handleChangeTheme()" class="theme-btn">切换主题</button>
     <div id="circle" style="visibility: hidden"></div>
     <div id="circleOne"></div>
     <div class="feature-item">
@@ -62,6 +63,9 @@
     function handleChange(value) {
       push(Number(value));
       render();
+    }
+    function handleChangeTheme () {
+      addClass(document.body, 'white-theme')
     }
   </script>
 </html>
