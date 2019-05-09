@@ -121,6 +121,11 @@ label {
 .theme-btn {
   float: right;
 }
+#move-line {
+  position: fixed;
+  border-top: 1px solid red;
+  transform-origin: left top;
+}
 /**  white theme **/
 
 .white-theme {

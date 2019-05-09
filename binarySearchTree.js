@@ -36,7 +36,7 @@ class BinarySearchTree {
   }
 
   get(key) {
-    this._get(this.root, key);
+    return this._get(this.root, key);
   }
 
   _get(node, key) {
@@ -55,10 +55,11 @@ class BinarySearchTree {
         type: 'heightLight'
       });
     }
-
+    console.log('node.key', node.key, 'key', key);
     if (node.key === key) {
       appOpt([node.ref], true, '查找到该元素');
-      return node.value;
+      // return node.value;
+      return node;
     } else if (key < node.key) {
       appOpt(undefined, false, `<-${key}小于当前值，向左子树查找`);
       return this._get(node.left, key);
@@ -80,7 +81,7 @@ class Node {
 
 const binarySearchTree = new BinarySearchTree();
 // const searchArr = getRandomArr(10);
-const searchArr = [5, 2, 9, 7, 1, 3, 8, 6, 4, 0];
+const searchArr = [9, 5, 7, 6, 8, 3, 2, 6, 4, 10];
 searchArr.forEach(i => binarySearchTree.put(i));
 
 function drawSearchTree(tree) {
