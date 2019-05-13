@@ -102,4 +102,3 @@ class List {
     console.log('ainmation', animationList.slice())
   }
 }
-
