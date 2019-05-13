@@ -31,6 +31,7 @@ class BRTree extends BinarySearchTree {
         this.root = await this._put(this.root, key, value);
         drawBrTree(this);
         this.root.color = 'black';
+        this.root.isRoot = true;
     }
     async rotateRight (node) {
         await rotateRight(node);
@@ -39,6 +40,16 @@ class BRTree extends BinarySearchTree {
         left.right = node;
         left.color = node.color;
         node.color = 'red';
+        /**
+         * 这里是为了纠正this.root指针，为了drawBrTree方法能正确的绘制出
+         * 旋转后的树。否则会因为root指针不正确绘制出的树行图不正确
+         * 因为需要展示动画，获取dom才需要重新绘制树形图。实际上的算法是不包含这部分的。
+         */
+        if (node.isRoot) {
+            left.isRoot = true;
+            this.root = left;
+            node.isRoot = false;
+        }
         drawBrTree(this);
         return left;
     }
@@ -49,6 +60,16 @@ class BRTree extends BinarySearchTree {
         right.left = node;
         right.color = node.color;
         node.color = 'red';
+        /**
+         * 这里是为了纠正this.root指针，为了drawBrTree方法能正确的绘制出
+         * 旋转后的树。否则会因为root指针不正确绘制出的树行图不正确
+         * 因为需要展示动画，获取dom才需要重新绘制树形图。实际上的算法是不包含这部分的。
+         */
+        if (node.isRoot) {
+            right.isRoot = true;
+            this.root = right;
+            node.isRoot = false;
+        }
         drawBrTree(this);
         return right;
     }
@@ -59,7 +80,6 @@ class BRTree extends BinarySearchTree {
         await changeBorderColor(node.left.key, 'black');
         node.right.color = 'black';
         await changeBorderColor(node.right.key, 'black');
-        console.log('flipColors');
         drawBrTree(this);
     }
     async _put (node, key, value) {
@@ -77,9 +97,11 @@ class BRTree extends BinarySearchTree {
         drawBrTree(this);
         if (isRed(node.right) && !isRed(node.left)) {
             node = await this.rotateLeft(node);
-        } else if (isRed(node.left) && isRed(node.left.left)) {
+        }
+        if (isRed(node.left) && isRed(node.left.left)) {
             node = await this.rotateRight(node);
-        } else if (isRed(node.left) && isRed(node.right)) {
+        }
+        if (isRed(node.left) && isRed(node.right)) {
             await this.flipColors(node);
         }
         return node;
