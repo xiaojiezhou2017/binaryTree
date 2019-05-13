@@ -62,9 +62,10 @@ function appendNode(parent, value = '', dir, strategy, color) {
     addClass(textWrap, 'text-wrap ');
     textWrap.setAttribute(
         'style',
-        `position: absolute; top:${moveStance -
-        FONT_SIZE / 2 +
-        'px'}; left: ${moveStance - FONT_SIZE / 2 + 'px'}`
+        `position: absolute;
+            top:${moveStance - FONT_SIZE / 2 + 'px'}; 
+            left: ${moveStance - FONT_SIZE / 2 + 'px'}
+         `
     );
 
     // info
@@ -116,7 +117,11 @@ function appendNode(parent, value = '', dir, strategy, color) {
     child.deep = deep + 1;
     child.len = lineWidth;
     child.deg = baseDeg;
-
+    // 设置颜色，用来标识红黑树的红色节点，所以这里只是在颜色为红色的时候才设置背景色
+    if (!isUndefined(color) && color === 'red') {
+        textWrap.style.backgroundColor = 'red';
+        child.style.backgroundColor = color;
+    }
     fragment.appendChild(line);
 
     const deg = Math.PI / 180;
