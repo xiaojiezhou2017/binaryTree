@@ -118,10 +118,10 @@ label {
   margin-top: 20px;
   width: 400px;
 }
-.theme-btn {
+.adjust {
   float: right;
 }
-#move-line {
+.move-line {
   position: fixed;
   border-top: 1px solid red;
   transform-origin: left top;
@@ -150,6 +150,7 @@ label {
 
 .white-theme .line {
   border-color: black;
+  transition: all 1s;
 }
 
 .white-theme .sorted {
@@ -162,4 +163,8 @@ label {
 
 .white-theme .height-light > .text-wrap {
   background: rgb(171, 92, 31);
+}
+
+.white-theme .move-line {
+  border-color: black;
 }

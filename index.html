@@ -1,73 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
     <title>有序二叉树</title>
-  </head>
-  <link rel="stylesheet" href="./index.css" />
-  <body>
+</head>
+<link rel="stylesheet" href="./index.css"/>
+<body>
+<div class="adjust">
     <button onclick="handleChangeTheme()" class="theme-btn">切换主题</button>
-    <div id="circle" style="visibility: hidden"></div>
-    <div id="circleOne"></div>
-    <div id="move-line"></div>
-    <div class="feature-item">
-      <div>
-        <label for="value">请输入要插入的值:</label>
-        <input
-          type="text"
-          id="value"
-          name="value"
-          onchange="handleChange(this.value)"
-        />
-        <button onclick="delMax()">删除最大元素</button>
-      </div>
-    </div>
-    <div class="feature-item">
-      <div>
-        <label for="value">请输入自定义数组,逗号分隔:</label>
-        <input
-          type="text"
-          name="value"
-          onchange="handleArrChange(this.value)"
-        />
-      </div>
-      <div>
+    <div>
         <label for="value">请输入执行的速率:</label>
         <input
-          type="text"
-          value="1"
-          name="value"
-          onchange="handleChangeSpeed(this.value)"
+                type="text"
+                value="1"
+                name="value"
+                onchange="handleChangeSpeed(this.value)"
+        />
+    </div>
+</div>
+
+<div id="circle" style="visibility: hidden"></div>
+<div id="circleOne"></div>
+<div id="move-line"></div>
+<div class="feature-item">
+    <div>
+        <label for="value">请输入要插入的值:</label>
+        <input
+                type="text"
+                id="value"
+                name="value"
+                onchange="handleChange(this.value)"
+        />
+        <button onclick="delMax()">删除最大元素</button>
+    </div>
+</div>
+<div class="feature-item">
+    <div>
+        <label for="value">请输入自定义数组,逗号分隔:</label>
+        <input
+                type="text"
+                name="value"
+                onchange="handleArrChange(this.value)"
         />
         <button onclick="handleSort()">演示堆排序</button>
-      </div>
     </div>
-    <div class="button-group">
-      <div class="button-item">
+</div>
+<div class="button-group">
+    <div class="button-item">
         <label for="value">请输入要查找的元素:</label>
-        <input type="text" name="value" onchange="handleTarget(this.value)" />
+        <input type="text" name="value" onchange="handleTarget(this.value)"/>
         <button onclick="handleSearch()">演示二叉树查找</button>
-      </div>
     </div>
-    <div class="console-wrapper">
-      <span>当前数组:</span>
-      <div id="console"></div>
+</div>
+<div class="button-group">
+    <div class="button-item">
+        <label for="value">红黑树：请输入插入的元素:</label>
+        <input type="text" name="value" onchange="handleBrTreePush(this.value)"/>
     </div>
-  </body>
-  <script src="./base.js"></script>
-  <script src="./heapSort.js"></script>
-  <script src="./binarySearchTree.js"></script>
-  <script src="./list.js"></script>
-  <script src="./BRTree.js"></script>
-  <script>
+</div>
+<div class="console-wrapper">
+    <span>当前数组:</span>
+    <div id="console"></div>
+</div>
+</body>
+<script src="./base.js"></script>
+<script src="./heapSort.js"></script>
+<script src="./binarySearchTree.js"></script>
+<script src="./list.js"></script>
+<script src="./BRTree.js"></script>
+<script>
     function handleChange(value) {
-      push(Number(value));
-      render();
+        push(Number(value));
+        render();
     }
-    function handleChangeTheme () {
-      addClass(document.body, 'white-theme')
+
+    function handleChangeTheme() {
+        addClass(document.body, 'white-theme')
     }
-  </script>
+</script>
 </html>

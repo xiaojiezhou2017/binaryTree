@@ -18,7 +18,7 @@ const LINE_WIDTH = 300;
 const deep = 0;
 const deepMap = {};
 const RATIO = 3;
-const BASE_DEG = 20;
+const BASE_DEG = 15;
 const BASE_SPEED = 0.6;
 let speed = BASE_SPEED;
 
@@ -44,7 +44,7 @@ function getDeep() {
 
 const getDeeper = getDeep();
 
-function appendNode(parent, value = '', dir, strategy) {
+function appendNode(parent, value = '', dir, strategy, color) {
     function defaultStrategy(parent) {
         return {
             baseDeg: (parent.deg || BASE_DEG) * 1.5,
@@ -62,7 +62,7 @@ function appendNode(parent, value = '', dir, strategy) {
     addClass(textWrap, 'text-wrap ');
     textWrap.setAttribute(
         'style',
-        `position: absolute; toexpandLinep:${moveStance -
+        `position: absolute; top:${moveStance -
         FONT_SIZE / 2 +
         'px'}; left: ${moveStance - FONT_SIZE / 2 + 'px'}`
     );
@@ -81,6 +81,9 @@ function appendNode(parent, value = '', dir, strategy) {
         document.body.appendChild(root);
         root.appendChild(textWrap);
         root.appendChild(infoWrap);
+        const {baseDeg, lineWidth} = strategy({});
+        root.deg = baseDeg;
+        root.len = lineWidth;
         return root;
     }
     // 树的深度
@@ -102,6 +105,7 @@ function appendNode(parent, value = '', dir, strategy) {
         dir === 'right' ? `${baseDeg}deg` : `${180 - baseDeg}deg`;
     line.style.width = lineWidth - 15 + 'px';
     line.style.transformOrigin = 'left top';
+    line.style.borderColor = color;
     // line.style.transform = `rotate(45deg) translateX(${moveStance}px) translateY(${moveStance}px)`;
     line.style.transform = `translateX(${moveStance}px) translateY(${moveStance}px) rotate(${transformDeg})`;
 
@@ -139,33 +143,46 @@ function isUndefined(v) {
 }
 
 
-function expandLine(source, target) {
+function expandLine(source, target, color="black") {
     let {left: sl, top: st, value: sv} = source;
     let {left: tl, top: tt, value: tv} = target;
     const leftDis = Math.abs(sl - tl);
     const topDis = Math.abs(tt - st);
     const dis = Math.sqrt(leftDis ** 2 + topDis ** 2);
-    let ele = document.querySelector('#move-line');
+    let ele = document.createElement('div');
+    ele.setAttribute('class', 'move-line');
+    ele.style.borderColor = color;
+    document.body.appendChild(ele);
     const leftDir = leftDis / dis;
     const topDir = topDis / dis;
-    const deg = Math.asin(leftDir) * 180 - 4;
+    const tanValue = topDis / leftDis;
+    const rate = 180 / Math.PI;
+    let deg;
+    if (sl < tl) {
+       deg = Math.atan(tanValue) * rate;
+    } else {
+      deg = 180 - Math.atan(tanValue)* rate;
+    }
     // const deg = theta * Math.PI / 180;
     ele.style.left = sl + 15 + 'px';
     ele.style.top = st + 15 + 'px';
-    ele.style.transform = `rotate(${deg}deg)`
+    ele.style.transform = `rotate(${deg}deg)`;
     ele.style.width = '0px';
     const speed = 1;
     let leftPos = sl;
     let topPos = st;
-    return new Promise ((resolve) => {
+    return new Promise((resolve) => {
         const step = function () {
             leftPos += speed * leftDir;
             topPos += speed * topDir;
             ele.style.width = parseInt(ele.style.width) + speed + 'px';
             const isStop = parseInt(ele.style.width) > dis;
             if (!isStop) {
-                resolve();
                 window.requestAnimationFrame(step);
+            } else {
+                resolve(() => {
+                    document.body.removeChild(ele);
+                });
             }
         };
         window.requestAnimationFrame(step)
@@ -173,7 +190,7 @@ function expandLine(source, target) {
 
 }
 
-function moveByLine(source, target, targetDom) {
+function moveByLine(source, target, targetDom, moveDir) {
     let {left: sl, top: st, value: sv} = source;
     let {left: tl, top: tt, value: tv} = target;
     const leftDis = Math.abs(sl - tl);
@@ -181,17 +198,31 @@ function moveByLine(source, target, targetDom) {
     const dis = Math.sqrt(leftDis ** 2 + topDis ** 2);
     let ele;
     if (isUndefined(targetDom)) {
-        const ele = document.querySelector('#circle');
+        ele = document.querySelector('#circle');
         ele.style.visibility = 'visible';
         ele.innerHTML = sv;
     } else {
         ele = targetDom
     }
 
+
     const leftDir = leftDis / dis;
     const topDir = topDis / dis;
     let leftPos = sl;
     let topPos = st;
+
+    function getStopFlag () {
+        const isLeftBoundary = Math.abs(leftPos - tl) < 3;
+        const isTopBoundary = Math.abs(topPos - tt) < 3;
+        if (isUndefined(moveDir)) {
+            return isLeftBoundary || isTopBoundary;
+        } else if (moveDir === 'left') {
+            return isLeftBoundary;
+        } else if (moveDir === 'top') {
+            return isTopBoundary;
+        }
+    }
+
     return new Promise(resolve => {
         function step() {
             if (sl < tl) {
@@ -205,7 +236,10 @@ function moveByLine(source, target, targetDom) {
                 topPos -= speed * topDir;
             }
             setPoistion(ele, leftPos, topPos);
-            const isStop = Math.abs(leftPos - tl) < 3 || Math.abs(topPos - tt) < 3;
+            if (isUndefined(moveDir)) {
+
+            }
+            const isStop = getStopFlag();
             if (!isStop) {
                 window.requestAnimationFrame(step);
             } else {
@@ -257,7 +291,6 @@ async function handleOpration(opt) {
         source.value = value;
         await moveByLine(source, target);
         hideCircle();
-
         setVal(targetEle, value);
         setVal(sourceEle, binaryTree[targetValue]);
         setTextClass(sourceEle, 'jump');

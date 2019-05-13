@@ -55,7 +55,6 @@ class BinarySearchTree {
         type: 'heightLight'
       });
     }
-    console.log('node.key', node.key, 'key', key);
     if (node.key === key) {
       appOpt([node.ref], true, '查找到该元素');
       // return node.value;
@@ -71,11 +70,12 @@ class BinarySearchTree {
 }
 
 class Node {
-  constructor(key, value, left, right) {
+  constructor(key, value, left, right, color) {
     this.key = key;
     this.value = value;
     this.left = left;
     this.right = right;
+    this.color = color;
   }
 }
 
